@@ -3,7 +3,10 @@ import { ProductResponseSchema } from '../schemas/cart';
 import { useCartStore } from '../store/storeProducts';
 
 const Products = () => {
+  const cart = useCartStore((state) => state.cart);
   const addToCart = useCartStore((state) => state.addToCart);
+  const incrementQuantity = useCartStore((state) => state.incrementQuantity);
+  const decrementQuantity = useCartStore((state) => state.decrementQuantity);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -140,12 +143,26 @@ const Products = () => {
                   
                   <div className="mt-auto pt-4 flex items-center justify-between border-t border-gray-50">
                     <span className="text-2xl font-extrabold text-indigo-600">₹{product.price}</span>
-                    <button 
-                      onClick={() => addToCart(product)}
-                      className="px-4 py-2 bg-gray-900 text-white text-sm font-semibold rounded-lg shadow-md hover:bg-gray-800 active:scale-95 transition-all"
-                    >
-                      Add to Cart
-                    </button>
+                    {(() => {
+                      const cartItem = cart.find(c => c.id === product.id);
+                      if (cartItem) {
+                        return (
+                          <div className="flex items-center space-x-3 bg-gray-100 rounded-lg p-1">
+                            <button onClick={() => decrementQuantity(product.id)} className="px-3 py-1 bg-white rounded shadow-sm text-gray-800 font-bold hover:bg-gray-50">-</button>
+                            <span className="font-bold text-gray-900 w-4 text-center">{cartItem.quantity}</span>
+                            <button onClick={() => incrementQuantity(product.id)} className="px-3 py-1 bg-white rounded shadow-sm text-gray-800 font-bold hover:bg-gray-50">+</button>
+                          </div>
+                        );
+                      }
+                      return (
+                        <button 
+                          onClick={() => addToCart(product)}
+                          className="px-4 py-2 bg-gray-900 text-white text-sm font-semibold rounded-lg shadow-md hover:bg-gray-800 active:scale-95 transition-all"
+                        >
+                          Add to Cart
+                        </button>
+                      );
+                    })()}
                   </div>
                 </div>
               </div>

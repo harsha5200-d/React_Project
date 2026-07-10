@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import { useCartStore } from '../store/storeProducts';
 
 const StorePage = ({ navigateToProducts }) => {
-  const { cart, removeFromCart, resetCart } = useCartStore();
+  const { cart, removeFromCart, resetCart, incrementQuantity, decrementQuantity } = useCartStore();
   const [billingType, setBillingType] = useState('credit_card');
   const [checkedOut, setCheckedOut] = useState(false);
 
-  const totalCost = cart.reduce((sum, item) => sum + item.price, 0).toFixed(2);
+  const totalCost = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0).toFixed(2);
+  const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   const handleCheckout = () => {
     if (cart.length === 0) return;
@@ -65,18 +66,24 @@ const StorePage = ({ navigateToProducts }) => {
           <div className="flex-1">
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
               <ul className="divide-y divide-gray-200">
-                {cart.map((item, idx) => (
-                  <li key={idx} className="p-6 flex items-center hover:bg-gray-50 transition-colors">
+                {cart.map((item) => (
+                  <li key={item.id} className="p-6 flex items-center hover:bg-gray-50 transition-colors">
                     <img src={item.thumbnail} alt={item.title} className="w-20 h-20 object-contain rounded-md bg-gray-100 border border-gray-200" />
                     <div className="ml-6 flex-1">
                       <h4 className="text-lg font-bold text-gray-900">{item.title}</h4>
                       <p className="text-sm text-gray-500 line-clamp-1">{item.description}</p>
+                      <p className="text-sm font-semibold text-indigo-600 mt-1">₹{item.price.toFixed(2)} each</p>
                     </div>
                     <div className="ml-6 flex flex-col items-end">
-                      <p className="text-xl font-extrabold text-indigo-600">₹{item.price.toFixed(2)}</p>
+                      <p className="text-xl font-extrabold text-gray-900 mb-2">₹{(item.price * item.quantity).toFixed(2)}</p>
+                      <div className="flex items-center space-x-2 bg-gray-100 rounded-lg p-1 mb-2">
+                        <button onClick={() => decrementQuantity(item.id)} className="px-2 py-1 bg-white rounded shadow-sm text-gray-800 font-bold hover:bg-gray-50">-</button>
+                        <span className="font-bold text-gray-900 w-4 text-center">{item.quantity}</span>
+                        <button onClick={() => incrementQuantity(item.id)} className="px-2 py-1 bg-white rounded shadow-sm text-gray-800 font-bold hover:bg-gray-50">+</button>
+                      </div>
                       <button 
-                        onClick={() => removeFromCart(idx)}
-                        className="mt-2 text-sm text-red-500 hover:text-red-700 font-semibold transition-colors"
+                        onClick={() => removeFromCart(item.id)}
+                        className="text-xs text-red-500 hover:text-red-700 font-semibold transition-colors"
                       >
                         Remove
                       </button>
@@ -94,7 +101,7 @@ const StorePage = ({ navigateToProducts }) => {
               
               <div className="flex justify-between items-center mb-4">
                 <span className="text-gray-600">Total Items:</span>
-                <span className="font-semibold text-gray-900">{cart.length}</span>
+                <span className="font-semibold text-gray-900">{totalItems}</span>
               </div>
               
               <div className="flex justify-between items-center mb-6">
