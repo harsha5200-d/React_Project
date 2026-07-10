@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { ProductResponseSchema } from '../schemas/cart';
+import { useCartStore } from '../store/storeProducts';
 
-const Products = ({ addToCart }) => {
+const Products = () => {
+  const addToCart = useCartStore((state) => state.addToCart);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -103,7 +105,7 @@ const Products = ({ addToCart }) => {
                   <div className="mt-auto pt-4 flex items-center justify-between border-t border-gray-50">
                     <span className="text-2xl font-extrabold text-indigo-600">${product.price}</span>
                     <button 
-                      onClick={() => addToCart && addToCart(product)}
+                      onClick={() => addToCart(product)}
                       className="px-4 py-2 bg-gray-900 text-white text-sm font-semibold rounded-lg shadow-md hover:bg-gray-800 active:scale-95 transition-all"
                     >
                       Add to Cart

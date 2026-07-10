@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import { useCartStore } from '../store/storeProducts';
 
-const StorePage = ({ cart, setCart, navigateToProducts }) => {
+const StorePage = ({ navigateToProducts }) => {
+  const { cart, removeFromCart, resetCart } = useCartStore();
   const [billingType, setBillingType] = useState('credit_card');
   const [checkedOut, setCheckedOut] = useState(false);
 
@@ -9,12 +11,6 @@ const StorePage = ({ cart, setCart, navigateToProducts }) => {
   const handleCheckout = () => {
     if (cart.length === 0) return;
     setCheckedOut(true);
-    // Optional: clear cart after checking out
-    // setCart([]); 
-  };
-
-  const handleRemove = (indexToRemove) => {
-    setCart(cart.filter((_, idx) => idx !== indexToRemove));
   };
 
   if (checkedOut) {
@@ -28,7 +24,7 @@ const StorePage = ({ cart, setCart, navigateToProducts }) => {
         <p className="text-gray-500 mb-8">You paid <span className="font-bold text-gray-800">${totalCost}</span> via {billingType.replace('_', ' ').toUpperCase()}.</p>
         <button 
           onClick={() => {
-            setCart([]);
+            resetCart();
             setCheckedOut(false);
             navigateToProducts();
           }}
@@ -79,7 +75,7 @@ const StorePage = ({ cart, setCart, navigateToProducts }) => {
                     <div className="ml-6 flex flex-col items-end">
                       <p className="text-xl font-extrabold text-indigo-600">${item.price.toFixed(2)}</p>
                       <button 
-                        onClick={() => handleRemove(idx)}
+                        onClick={() => removeFromCart(idx)}
                         className="mt-2 text-sm text-red-500 hover:text-red-700 font-semibold transition-colors"
                       >
                         Remove
@@ -121,9 +117,16 @@ const StorePage = ({ cart, setCart, navigateToProducts }) => {
 
               <button 
                 onClick={handleCheckout}
-                className="w-full py-4 bg-gray-900 text-white font-bold rounded-lg shadow-lg hover:bg-gray-800 hover:shadow-xl active:scale-95 transition-all text-lg"
+                className="w-full py-4 bg-gray-900 text-white font-bold rounded-lg shadow-lg hover:bg-gray-800 hover:shadow-xl active:scale-95 transition-all text-lg mb-3"
               >
                 Proceed to Pay ${totalCost}
+              </button>
+              
+              <button 
+                onClick={resetCart}
+                className="w-full py-3 bg-red-100 text-red-600 font-bold rounded-lg shadow-sm border border-red-200 hover:bg-red-200 active:scale-95 transition-all"
+              >
+                Reset Cart
               </button>
             </div>
           </div>

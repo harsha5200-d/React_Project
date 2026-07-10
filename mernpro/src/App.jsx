@@ -4,14 +4,13 @@ import CollegeLoginForm from "./components/collegform"
 import Products from './components/Products'
 import User from './components/uservalidor'
 import StorePage from './components/StorePage'
+import { useCartStore } from './store/storeProducts'
 
 function App() {
-  const [cart, setCart] = useState([])
+  const cart = useCartStore((state) => state.cart)
   const [view, setView] = useState('products') // 'products' or 'cart'
 
-  const addToCart = (product) => {
-    setCart([...cart, product])
-  }
+
 
   return (
     <div className="bg-gray-50 min-h-screen">
@@ -46,8 +45,8 @@ function App() {
 
       {/* Main Content Area */}
       <main>
-        {view === 'products' && <Products addToCart={addToCart} />}
-        {view === 'cart' && <StorePage cart={cart} setCart={setCart} navigateToProducts={() => setView('products')} />}
+        {view === 'products' && <Products />}
+        {view === 'cart' && <StorePage navigateToProducts={() => setView('products')} />}
       </main>
 
       {/* Separator for the previously requested User Component */}
