@@ -21,7 +21,7 @@ const StorePage = ({ navigateToProducts }) => {
         </svg>
         <h2 className="text-4xl font-extrabold text-gray-900 mb-4">Payment Successful!</h2>
         <p className="text-xl text-gray-600 mb-2">Thank you for your purchase.</p>
-        <p className="text-gray-500 mb-8">You paid <span className="font-bold text-gray-800">${totalCost}</span> via {billingType.replace('_', ' ').toUpperCase()}.</p>
+        <p className="text-gray-500 mb-8">You paid <span className="font-bold text-gray-800">₹{totalCost}</span> via {billingType.replace('_', ' ').toUpperCase()}.</p>
         <button 
           onClick={() => {
             resetCart();
@@ -73,7 +73,7 @@ const StorePage = ({ navigateToProducts }) => {
                       <p className="text-sm text-gray-500 line-clamp-1">{item.description}</p>
                     </div>
                     <div className="ml-6 flex flex-col items-end">
-                      <p className="text-xl font-extrabold text-indigo-600">${item.price.toFixed(2)}</p>
+                      <p className="text-xl font-extrabold text-indigo-600">₹{item.price.toFixed(2)}</p>
                       <button 
                         onClick={() => removeFromCart(idx)}
                         className="mt-2 text-sm text-red-500 hover:text-red-700 font-semibold transition-colors"
@@ -99,7 +99,7 @@ const StorePage = ({ navigateToProducts }) => {
               
               <div className="flex justify-between items-center mb-6">
                 <span className="text-gray-600">Total Cost:</span>
-                <span className="text-2xl font-extrabold text-indigo-600">${totalCost}</span>
+                <span className="text-2xl font-extrabold text-indigo-600">₹{totalCost}</span>
               </div>
 
               <div className="mb-6">
@@ -119,7 +119,7 @@ const StorePage = ({ navigateToProducts }) => {
                 onClick={handleCheckout}
                 className="w-full py-4 bg-gray-900 text-white font-bold rounded-lg shadow-lg hover:bg-gray-800 hover:shadow-xl active:scale-95 transition-all text-lg mb-3"
               >
-                Proceed to Pay ${totalCost}
+                Proceed to Pay ₹{totalCost}
               </button>
               
               <button 

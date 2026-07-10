@@ -8,6 +8,8 @@ const Products = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [maxPrice, setMaxPrice] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState('All');
 
   useEffect(() => {
     fetch('https://dummyjson.com/products')
@@ -32,6 +34,8 @@ const Products = () => {
 
   const nonVegKeywords = ['chicken', 'beef', 'pork', 'meat', 'fish', 'egg', 'mutton', 'seafood', 'bacon'];
 
+  const categories = ['All', ...new Set(products.map(p => p.category))];
+
   const filteredProducts = products.filter(product => {
     // Check if the product contains any non-veg keywords
     const isNonVeg = nonVegKeywords.some(keyword => {
@@ -42,6 +46,14 @@ const Products = () => {
     });
 
     if (isNonVeg) return false; // Filter out non-veg
+
+    if (searchQuery && !product.title.toLowerCase().includes(searchQuery.toLowerCase()) && !product.description.toLowerCase().includes(searchQuery.toLowerCase())) {
+      return false;
+    }
+
+    if (categoryFilter !== 'All' && product.category !== categoryFilter) {
+      return false;
+    }
 
     if (!maxPrice) return true;
     return product.price <= Number(maxPrice);
@@ -55,15 +67,35 @@ const Products = () => {
           <p className="text-gray-500 text-sm mt-1"> Navdeep produts</p>
         </div>
         
-        <div className="mt-4 md:mt-0 flex items-center space-x-3 bg-white p-3 rounded-xl shadow-sm border border-gray-200">
-          <label className="text-sm font-bold text-gray-700 whitespace-nowrap">Max Price ($):</label>
+        <div className="mt-4 md:mt-0 flex flex-wrap items-center gap-3">
           <input 
-            type="number" 
-            placeholder="e.g. 50" 
-            value={maxPrice}
-            onChange={(e) => setMaxPrice(e.target.value)}
-            className="w-24 px-3 py-1.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all font-medium text-gray-800 bg-gray-50 focus:bg-white"
+            type="text" 
+            placeholder="Search products..." 
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-48 px-3 py-1.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all font-medium text-gray-800 bg-gray-50 focus:bg-white shadow-sm"
           />
+          
+          <select 
+            value={categoryFilter}
+            onChange={(e) => setCategoryFilter(e.target.value)}
+            className="w-32 px-3 py-1.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all font-medium text-gray-800 bg-gray-50 focus:bg-white shadow-sm"
+          >
+            {categories.map(cat => (
+              <option key={cat} value={cat}>{cat}</option>
+            ))}
+          </select>
+
+          <div className="flex items-center space-x-2 bg-white p-1.5 rounded-md shadow-sm border border-gray-200">
+            <label className="text-sm font-bold text-gray-700 whitespace-nowrap px-2">Max (₹):</label>
+            <input 
+              type="number" 
+              placeholder="e.g. 50" 
+              value={maxPrice}
+              onChange={(e) => setMaxPrice(e.target.value)}
+              className="w-20 px-2 py-1 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 outline-none font-medium text-gray-800 bg-gray-50"
+            />
+          </div>
         </div>
       </div>
 
@@ -103,7 +135,7 @@ const Products = () => {
                   <p className="text-sm text-gray-500 line-clamp-2 mb-4">{product.description}</p>
                   
                   <div className="mt-auto pt-4 flex items-center justify-between border-t border-gray-50">
-                    <span className="text-2xl font-extrabold text-indigo-600">${product.price}</span>
+                    <span className="text-2xl font-extrabold text-indigo-600">₹{product.price}</span>
                     <button 
                       onClick={() => addToCart(product)}
                       className="px-4 py-2 bg-gray-900 text-white text-sm font-semibold rounded-lg shadow-md hover:bg-gray-800 active:scale-95 transition-all"
@@ -120,7 +152,7 @@ const Products = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               <h3 className="text-lg font-medium text-gray-900">No products found</h3>
-              <p className="text-gray-500 mt-1">Try increasing your max price limit above ${maxPrice}.</p>
+              <p className="text-gray-500 mt-1">Try adjusting your filters or search query.</p>
             </div>
           )}
         </div>

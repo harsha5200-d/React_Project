@@ -51,7 +51,7 @@ function App() {
 
       {/* Separator for the previously requested User Component */}
       <div className="max-w-6xl mx-auto my-16 border-t-2 border-dashed border-gray-300"></div>
-      <User/>
+      
     </div>
   )
 }
