@@ -7,4 +7,13 @@ export const useCartStore = create((set) => ({
     cart: state.cart.filter((_, idx) => idx !== indexToRemove)
   })),
   resetCart: () => set({ cart: [] }),
+
+  searchQuery: '',
+  setSearchQuery: (query) => set({ searchQuery: query }),
+  
+  categoryFilter: 'All',
+  setCategoryFilter: (category) => set({ categoryFilter: category }),
+  
+  maxPrice: '',
+  setMaxPrice: (price) => set({ maxPrice: price }),
 }));

@@ -7,9 +7,13 @@ const Products = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [maxPrice, setMaxPrice] = useState('');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState('All');
+  
+  const maxPrice = useCartStore((state) => state.maxPrice);
+  const setMaxPrice = useCartStore((state) => state.setMaxPrice);
+  const searchQuery = useCartStore((state) => state.searchQuery);
+  const setSearchQuery = useCartStore((state) => state.setSearchQuery);
+  const categoryFilter = useCartStore((state) => state.categoryFilter);
+  const setCategoryFilter = useCartStore((state) => state.setCategoryFilter);
 
   useEffect(() => {
     fetch('https://dummyjson.com/products')
